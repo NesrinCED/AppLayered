@@ -150,7 +150,8 @@ namespace DataAccessLayer.Repository
             var body = content;
 
             string fromMail = "dtgnororeply@gmail.com";
-            var fromPassword = "wrfyxjlylweyxano";
+            var fromPassword = "acimfpkjvvyyazvi";
+            // var fromPassword = "wrfyxjlylweyxano";
 
             MailMessage message = new MailMessage();
 
@@ -172,7 +173,7 @@ namespace DataAccessLayer.Repository
 
             var smtpClient = new SmtpClient();
 
-            smtpClient.UseDefaultCredentials = true;
+            smtpClient.UseDefaultCredentials = false;
 
             smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -220,5 +221,8 @@ namespace DataAccessLayer.Repository
 
             return output;
          }
+
+       
+
     }
 }

@@ -7,7 +7,14 @@ namespace AppAPI.AutoMapper
     { 
         public AutoMapperProfile()
         {
-            
+            CreateMap<CreateProjectDTO, Project>();
+
+            CreateMap<Project, CreateProjectDTO>();
+
+            CreateMap<FilteredTemplatesProjectDTO, Template>();
+
+            CreateMap<Template,FilteredTemplatesProjectDTO>();
+
             CreateMap<CreateEmployeeDTO, Employee>();
 
             CreateMap<Employee, CreateEmployeeDTO>();

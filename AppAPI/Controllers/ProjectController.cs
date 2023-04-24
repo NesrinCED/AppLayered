@@ -20,13 +20,26 @@ namespace AppAPI.Controllers
            _projectService = projectService;
 
         }
+
+        [HttpGet]
+        [Route("filteredTemplates/{projectId:Guid}")]
+
+        public IActionResult GetByProjectName([FromRoute] Guid projectId)
+        {
+            var project = this._projectService.GetById(projectId);
+            var list = project.FilteredTemplatesDTO.ToList();
+
+            return Ok(list);
+
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
             return Ok(_projectService.GetAll());
         }
         [HttpPost]
-        public IActionResult Add([FromBody] ProjectDTO projectRequest)
+        public IActionResult Add([FromBody] CreateProjectDTO projectRequest)
         {
             return Ok(_projectService.Add(projectRequest));
 

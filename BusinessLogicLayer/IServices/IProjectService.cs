@@ -13,7 +13,7 @@ namespace BusinessLogicLayer.IServices
         ProjectDTO GetById(Guid id);
         ProjectDTO GetByName(string name);
         public List<ProjectDTO> GetAll();
-        ProjectDTO Add(ProjectDTO projectRequest);
+        CreateProjectDTO Add(CreateProjectDTO projectRequest);
         void Delete(Guid id);
         ProjectDTO Update(Guid id, ProjectDTO projectRequest);
     }

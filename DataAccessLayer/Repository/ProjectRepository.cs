@@ -38,7 +38,7 @@ namespace DataAccessLayer.Repository
         public Project Add(Project projectRequest)
         {
             projectRequest.ProjectId = Guid.NewGuid();
-            projectRequest.CreatedDate = DateTime.Now.Date;
+            projectRequest.CreatedDate = DateTime.Now;
             _context.Projects.Add(projectRequest);
             _context.SaveChanges();
             return projectRequest;

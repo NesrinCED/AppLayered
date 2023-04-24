@@ -15,8 +15,7 @@ namespace DataAccessLayer.IRepository
     {
         Template GetById(Guid id);
         Template GetByName(string name);
-        List <Template> GetAll();
-
+        List<Template> GetAll();
         Template Add(Template templateRequest);
         void Delete(Guid id);
         Template Update(Guid id, Template templateRequest);

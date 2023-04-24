@@ -16,12 +16,12 @@ namespace AppAPI.Controllers
     {
         private readonly ITemplateService _templateService;
 
-        private IWebHostEnvironment hostingEnv;
-   
-        public TemplateController(ITemplateService templateService, IWebHostEnvironment environment)
+        private readonly IProjectService _projectService;
+
+        public TemplateController(ITemplateService templateService,IProjectService projectService )
         {
             _templateService = templateService;
-             hostingEnv = environment;
+            _projectService = projectService;
         }
 
         [HttpGet]
@@ -99,11 +99,17 @@ namespace AppAPI.Controllers
 
         [HttpPost]
         [Route("email/{id:Guid}")]
-        public IActionResult SendEmailWithTemplate([FromRoute]  Guid id, [FromBody] Object json, string subject, string to)
+        public IActionResult SendEmailWithTemplate([FromRoute] Guid id, [FromBody] Object body)
         {
             try
             {
-                return Ok(_templateService.SendEmailWithTemplate(id, subject, to, json)); 
+                var bodyS = JObject.Parse(body.ToString());
+
+                string subject = bodyS["subject"].ToString();
+                string to = bodyS["to"].ToString();
+                var json = bodyS["jsonData"];
+
+                return Ok(_templateService.SendEmailWithTemplate(id, subject, to, json));
                 //return Ok("Email sent successfully !");
             }
             catch (SmtpException ex)
@@ -113,15 +119,34 @@ namespace AppAPI.Controllers
 
         }
 
+        /*  [HttpPost]
+          [Route("email/{id:Guid}")]
+          public IActionResult SendEmailWithTemplate([FromRoute]  Guid id, [FromBody] Object json, string subject, string to)
+          {
+              try
+              {
+                  return Ok(_templateService.SendEmailWithTemplate(id, subject, to, json)); 
+                  //return Ok("Email sent successfully !");
+              }
+              catch (SmtpException ex)
+              {
+                  return BadRequest("Error sending email: " + ex.Message);
+              }
+
+          }
+          */
         [HttpPost]
         [Route("pdf/{id:Guid}")]
         public IActionResult CreatePDFWithTemplate([FromRoute] Guid id, [FromBody] Object json)
         {
             var fileData = _templateService.CreatePDFWithTemplate(id,json);
             var fileName = "TemplatePdf.pdf";
-            var mimeType = "Template/pdf";                      
+            var mimeType = "application/pdf";
             // Set the content type and return the PDF as a FileResult
-            return File(fileData, mimeType, fileName);
+            var file = File(fileData, mimeType, fileName);
+          
+            return file;
+            //return Ok(file) ;
         }
 
         [HttpPost]
