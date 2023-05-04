@@ -16,5 +16,7 @@ namespace BusinessLogicLayer.IServices
         CreateProjectDTO Add(CreateProjectDTO projectRequest);
         void Delete(Guid id);
         ProjectDTO Update(Guid id, ProjectDTO projectRequest);
+        public List<TemplateDTO> GetFilteredTemplates(Guid projectId);
+
     }
 }

@@ -23,11 +23,9 @@ namespace AppAPI.Controllers
 
         [HttpGet]
         [Route("filteredTemplates/{projectId:Guid}")]
-
-        public IActionResult GetByProjectName([FromRoute] Guid projectId)
+        public IActionResult GetFilteredTemplates([FromRoute] Guid projectId)
         {
-            var project = this._projectService.GetById(projectId);
-            var list = project.FilteredTemplatesDTO.ToList();
+            var list = this._projectService.GetFilteredTemplates(projectId);
 
             return Ok(list);
 
@@ -86,6 +84,10 @@ namespace AppAPI.Controllers
         [Route("{name}")]
         public IActionResult GetByName([FromRoute] string name)
         {
+            if(name == null)
+            {
+                return BadRequest();
+            }
             var project = _projectService.GetByName(name);
             if (project == null)
             {

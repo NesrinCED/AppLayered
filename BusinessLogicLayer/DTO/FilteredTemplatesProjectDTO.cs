@@ -17,5 +17,9 @@ namespace BusinessLogicLayer.DTO
         public Guid? ProjectId { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? ModifiedBy { get; set; }
+        public ProjectDTO Project { get; set; }
+        public EmployeeDTO TemplateModifiedBy { get; set; }
+        public CreateEmployeeDTO TemplateCreatedBy { get; set; }
+
     }
 }

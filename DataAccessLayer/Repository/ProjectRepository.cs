@@ -14,9 +14,28 @@ namespace DataAccessLayer.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly AppLayeredDBDbContext _context;
+
+//        private readonly EmployeeRepository _employeeRepository;, EmployeeRepository employeeRepository
+        
         public ProjectRepository(AppLayeredDBDbContext context)
         {
             _context = context;
+           // _employeeRepository = employeeRepository;
+        }
+
+        public List<Template> GetFilteredTemplates(Guid projectId)
+        {
+            var project = this.GetById(projectId);
+
+            var projectName = project.ProjectName;
+
+            var templates = new List<Template>();
+            
+            templates = _context.Templates 
+            .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+            .Where(x => x.ProjectId == projectId).ToList();
+     
+            return templates;
         }
 
         public List<Project> GetAll()
@@ -46,7 +65,13 @@ namespace DataAccessLayer.Repository
 
         public Project GetById(Guid id)
         {
-            var project = _context.Projects.Include(x => x.Templates).FirstOrDefault(x => x.ProjectId == id);
+            var project = _context.Projects.Include(x =>  x.Templates ).FirstOrDefault(x => x.ProjectId == id);
+                /*            _context.Templates.ToList();
+.ForEach( x => {
+                x.Templates.ToList().ForEach(x => { x.TemplateCreatedBy = this._employeeRepository.GetById((Guid)x.CreatedBy);
+                    x.TemplateModifiedBy = this._employeeRepository.GetById((Guid)x.ModifiedBy);
+                });
+            });*/
             if (project == null)
             {
                 return null;

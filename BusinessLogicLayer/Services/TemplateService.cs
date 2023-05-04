@@ -35,8 +35,15 @@ namespace BusinessLogicLayer.Services
             //i needed these cz it rerurns new id for employee and project !!
 
             mappedTemplate.TemplateCreatedBy = _eRepository.GetById((Guid)addtemplateRequest.CreatedBy);
-            mappedTemplate.Project = _pRepository.GetById((Guid)addtemplateRequest.ProjectId);
 
+            if(addtemplateRequest.ProjectId!=null)
+            {
+                mappedTemplate.Project = _pRepository.GetById((Guid)addtemplateRequest.ProjectId);
+            }
+            else
+            {
+                mappedTemplate.Project = null;
+            }
             return _mapper.Map<CreateTemplateDTO>(_templateRepository.Add(mappedTemplate));
         }
 
@@ -88,7 +95,10 @@ namespace BusinessLogicLayer.Services
         {
             return _templateRepository.GenerateTemplateEngine(id, json);
         }
-
+        public List<TemplateDTO> GetFilteredTemplatesByLanguage(string language)
+        {
+            return _mapper.Map<List<TemplateDTO>>(_templateRepository.GetFilteredTemplatesByLanguage(language));
+        }
 
     }
 }

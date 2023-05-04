@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace DataAccessLayer.IRepository
 {
@@ -22,6 +23,8 @@ namespace DataAccessLayer.IRepository
         byte[] CreatePDFWithTemplate(Guid id, Object json);
         string SendEmailWithTemplate(Guid templateId, string subject, string to, Object json);
         string GenerateTemplateEngine(Guid id, Object json);
+        public List<Template> GetFilteredTemplatesByLanguage(string language);
+
 
     }
 }

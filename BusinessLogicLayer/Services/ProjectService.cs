@@ -36,7 +36,7 @@ namespace BusinessLogicLayer.Services
             var mappedData = _mapper.Map<List<ProjectDTO>>(data);
             mappedData.ForEach(e =>
             {
-                e.FilteredTemplatesDTO = _mapper.Map<List<FilteredTemplatesProjectDTO>>(data.First(x => x.ProjectId == e.ProjectId).Templates);
+                e.FilteredTemplatesDTO = _mapper.Map<List<TemplateDTO>>(data.First(x => x.ProjectId == e.ProjectId).Templates);
             });
 
             return mappedData;
@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services
         {
             var data = _projectRepository.GetById(id);
             var mappedData = _mapper.Map<ProjectDTO>(data);
-            mappedData.FilteredTemplatesDTO = _mapper.Map<List<FilteredTemplatesProjectDTO>>(data.Templates);
+            mappedData.FilteredTemplatesDTO = _mapper.Map<List<TemplateDTO>>(data.Templates);
             return mappedData;
         }
 
@@ -58,7 +58,7 @@ namespace BusinessLogicLayer.Services
         {
             var data = _projectRepository.GetByName(name);
             var mappedData = _mapper.Map<ProjectDTO>(data);
-            mappedData.FilteredTemplatesDTO = _mapper.Map<List<FilteredTemplatesProjectDTO>>(data.Templates);
+            mappedData.FilteredTemplatesDTO = _mapper.Map<List<TemplateDTO>>(data.Templates);
             return mappedData;
         }
         public ProjectDTO Update(Guid id, ProjectDTO projectRequest)
@@ -67,5 +67,9 @@ namespace BusinessLogicLayer.Services
 
             return _mapper.Map<ProjectDTO>(_projectRepository.Update(id, mappedData));
         }
+        public List<TemplateDTO> GetFilteredTemplates(Guid projectId)
+        {
+          return _mapper.Map<List<TemplateDTO>>(_projectRepository.GetFilteredTemplates(projectId));
+        }
     }
-    }
+}

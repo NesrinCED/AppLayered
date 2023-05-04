@@ -11,9 +11,17 @@ namespace AppAPI.AutoMapper
 
             CreateMap<Project, CreateProjectDTO>();
 
-            CreateMap<FilteredTemplatesProjectDTO, Template>();
+            CreateMap<FilteredTemplatesProjectDTO, Template>()
+              /*  .ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project))
+                .ForMember(dest => dest.TemplateCreatedBy, opt => opt.MapFrom(src => src.TemplateCreatedBy))
+                .ForMember(dest => dest.TemplateModifiedBy, opt => opt.MapFrom(src => src.TemplateModifiedBy))*/;
+            
 
-            CreateMap<Template,FilteredTemplatesProjectDTO>();
+            CreateMap<Template,FilteredTemplatesProjectDTO>()
+                /*.ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project))
+                .ForMember(dest => dest.TemplateCreatedBy, opt => opt.MapFrom(src => src.TemplateCreatedBy))
+                .ForMember(dest => dest.TemplateModifiedBy, opt => opt.MapFrom(src => src.TemplateModifiedBy))*/;
+
 
             CreateMap<CreateEmployeeDTO, Employee>();
 

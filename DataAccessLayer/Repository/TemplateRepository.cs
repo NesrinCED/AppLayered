@@ -16,6 +16,8 @@ using iTextSharp.text.html.simpleparser;
 using IronPdf;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+using System.Dynamic;
 
 namespace DataAccessLayer.Repository
 {
@@ -27,6 +29,8 @@ namespace DataAccessLayer.Repository
         {
             _context = context;
         }
+
+
         public Models.Template Add(Models.Template templateRequest)
         {
             templateRequest.TemplateId = Guid.NewGuid();
@@ -51,7 +55,7 @@ namespace DataAccessLayer.Repository
         {
             List<Models.Template> templates = new List<Models.Template>();
 
-            templates =  _context.Templates   .Include(x=>x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x=>x.Project).ToList();
+            templates = _context.Templates.Include(x=>x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x=>x.Project).ToList();
             //to get 2023-04-13T00.00.00
             templates.ForEach(template =>
             {
@@ -192,8 +196,8 @@ namespace DataAccessLayer.Repository
             }
 
         }
-         public string GenerateTemplateEngine(Guid id, Object json)
-         {
+        public string GenerateTemplateEngine(Guid id, Object json)
+        {
             var engine = new VelocityEngine();
 
             engine.Init();
@@ -206,12 +210,18 @@ namespace DataAccessLayer.Repository
 
             dynamic model = JsonConvert.DeserializeObject(json.ToString());
 
-
             foreach (JProperty prop in model)
             {
-                context.Put(prop.Name, prop.Value.ToString());
+                if (prop.Value.Type == JTokenType.Object)
+                {
+                    var nestedObject = JsonConvert.DeserializeObject(prop.Value.ToString());
+                    context.Put(prop.Name, nestedObject);
+                }
+                else
+                {
+                    context.Put(prop.Name, prop.Value.ToString());
+                }
             }
-            // context.Put("model", model);
 
             var outputWriter = new StringWriter();
 
@@ -220,9 +230,18 @@ namespace DataAccessLayer.Repository
             string output = outputWriter.ToString();
 
             return output;
-         }
+        }
+        public List<Models.Template> GetFilteredTemplatesByLanguage(string language)
+        {
+            var templates = new List<Models.Template>();
 
-       
+            templates = _context.Templates
+            .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+            .Where(x => x.Language == language).ToList();
+
+            return templates;
+        }
+
 
     }
 }

@@ -18,6 +18,6 @@ namespace BusinessLogicLayer.DTO
 
         public DateTime? CreatedDate { get; set; }
 
-        public List<FilteredTemplatesProjectDTO> FilteredTemplatesDTO { get; set; }
+        public List<TemplateDTO> FilteredTemplatesDTO { get; set; }
     }
 }

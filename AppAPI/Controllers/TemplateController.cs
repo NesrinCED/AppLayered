@@ -24,6 +24,23 @@ namespace AppAPI.Controllers
             _projectService = projectService;
         }
 
+        /*[HttpGet]
+        [Route("filteredTemplatesByLanguage/{language:string}")]
+        public IActionResult GetFilteredTemplatesByLanguage([FromRoute] string language)
+        {
+            var list = this._templateService.GetFilteredTemplatesByLanguage(language);
+
+            return Ok(list);
+
+        }*/
+        [HttpGet("filteredTemplatesByLanguage/{language}")]
+        public IActionResult GetFilteredTemplatesByLanguage([FromRoute] string language)
+        {
+            var list = this._templateService.GetFilteredTemplatesByLanguage(language);
+            return Ok(list);
+        }
+
+
         [HttpGet]
         public IActionResult GetAll()
         {

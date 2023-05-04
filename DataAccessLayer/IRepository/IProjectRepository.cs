@@ -15,5 +15,7 @@ namespace DataAccessLayer.IRepository
         Project Add(Project projectRequest);
         void Delete(Guid id);
         Project Update(Guid id, Project projectRequest);
+        public List<Template> GetFilteredTemplates(Guid projectId);
+
     }
 }

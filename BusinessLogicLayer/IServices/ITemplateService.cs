@@ -19,6 +19,7 @@ namespace BusinessLogicLayer.IServices
         byte[] CreatePDFWithTemplate(Guid id, Object json);
         string SendEmailWithTemplate(Guid templateId, string subject, string to, Object json);
         string GenerateTemplateEngine(Guid id, Object json);
+        public List<TemplateDTO> GetFilteredTemplatesByLanguage(string language);
 
 
     }

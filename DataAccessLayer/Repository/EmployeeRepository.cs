@@ -23,7 +23,7 @@ namespace DataAccessLayer.Repository
 
             employees = _context.Employees.ToList();
 
-            //employees = _context.Employees.Include(a=>a.TemplateCreatedBy).Include(a => a.TemplateModifiedBy).ToList();
+            employees = _context.Employees.Include(a=>a.TemplateCreatedBy).Include(a => a.TemplateModifiedBy).ToList();
 
             return employees;
         }
