@@ -4,10 +4,14 @@ using BusinessLogicLayer.IServices;
 using DataAccessLayer.IRepository;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repository;
+using iTextSharp.tool.xml.html;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using NVelocity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -95,9 +99,11 @@ namespace BusinessLogicLayer.Services
         {
             return _templateRepository.GenerateTemplateEngine(id, json);
         }
-        public List<TemplateDTO> GetFilteredTemplatesByLanguage(string language)
+
+        /*******Send email For User Password*********/
+        public string SendPasswordEmailToUser(Guid idUser, string emailUser)
         {
-            return _mapper.Map<List<TemplateDTO>>(_templateRepository.GetFilteredTemplatesByLanguage(language));
+            return _templateRepository.SendPasswordEmailToUser(idUser,  emailUser);
         }
 
     }

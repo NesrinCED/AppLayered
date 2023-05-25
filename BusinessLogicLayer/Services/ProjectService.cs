@@ -67,9 +67,13 @@ namespace BusinessLogicLayer.Services
 
             return _mapper.Map<ProjectDTO>(_projectRepository.Update(id, mappedData));
         }
-        public List<TemplateDTO> GetFilteredTemplates(Guid projectId)
+        public List<TemplateDTO> GetFilteredTemplates(Guid? projectId = null, string language = null)
         {
-          return _mapper.Map<List<TemplateDTO>>(_projectRepository.GetFilteredTemplates(projectId));
+          return _mapper.Map<List<TemplateDTO>>(_projectRepository.GetFilteredTemplates(projectId,language));
+        }
+        public List<TemplateDTO> GetFilteredTemplatesByProject(Guid projectId)
+        {
+            return _mapper.Map<List<TemplateDTO>>(_projectRepository.GetFilteredTemplatesByProject(projectId));
         }
     }
 }

@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Dynamic;
+using Org.BouncyCastle.Crypto;
 
 namespace DataAccessLayer.Repository
 {
@@ -25,17 +26,29 @@ namespace DataAccessLayer.Repository
     {
         private readonly AppLayeredDBDbContext _context;
 
-        public TemplateRepository(AppLayeredDBDbContext context)
+        private readonly IEmployeeRepository _employeeRepository;
+
+        private readonly ITemplateHistoryRepository _templateHistoryRepository;
+        public TemplateRepository(AppLayeredDBDbContext context, IEmployeeRepository employeeRepository, ITemplateHistoryRepository templateHistoryRepository)
         {
+            _employeeRepository = employeeRepository;
+
+            _templateHistoryRepository = templateHistoryRepository;
+
             _context = context;
         }
-
 
         public Models.Template Add(Models.Template templateRequest)
         {
             templateRequest.TemplateId = Guid.NewGuid();
             templateRequest.CreatedDate=DateTime.Now;
             _context.Templates.Add(templateRequest);
+
+            /****insert into template history*****/
+            var employeeName=this._employeeRepository.GetById((Guid)templateRequest.CreatedBy).EmployeeName;
+
+            this._templateHistoryRepository.Add(templateRequest,employeeName);
+
             _context.SaveChanges();
             return templateRequest;
         }
@@ -113,8 +126,13 @@ namespace DataAccessLayer.Repository
 
             template.ModifiedDate= DateTime.Now;
 
-             _context.SaveChanges();
+            _context.SaveChanges();
 
+            /****insert into template history*****/
+            var employeeName = this._employeeRepository.GetById((Guid)templateRequest.ModifiedBy).EmployeeName;
+
+            this._templateHistoryRepository.Add(template, employeeName);
+            
             return template;
         }
         public Models.Template GetByName(string name)
@@ -231,17 +249,58 @@ namespace DataAccessLayer.Repository
 
             return output;
         }
-        public List<Models.Template> GetFilteredTemplatesByLanguage(string language)
+        /*******Send email For User Password*********/
+        public string SendPasswordEmailToUser(Guid idUser, string emailUser)
         {
-            var templates = new List<Models.Template>();
+            var employee = _employeeRepository.GetById(idUser);
 
-            templates = _context.Templates
-            .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
-            .Where(x => x.Language == language).ToList();
+            var emailTemplateId = new Guid("0a692750-a67a-45b9-8108-5124499dc98e");
 
-            return templates;
+            var json = new JObject(
+                new JProperty("name", employee.EmployeeName),
+                new JProperty("password", employee.EmployeePassword)
+            );
+
+            string content = GenerateTemplateEngine(emailTemplateId, json);
+
+            string fromMail = "dtgnororeply@gmail.com";
+            var fromPassword = "acimfpkjvvyyazvi";
+
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(fromMail);
+            message.Subject = "Password News";
+            message.To.Add(new MailAddress(emailUser));
+            message.IsBodyHtml = true;
+            // Replace base64 image strings with image tags
+            var regex = new Regex(@"<img\s+[^>]*?src\s*=\s*['""]data:(?<type>[^;]+);base64,(?<data>[^'""]+)['""][^>]*?>", RegexOptions.Compiled);
+            content = regex.Replace(content, match =>
+            {
+                var type = match.Groups["type"].Value;
+                var data = match.Groups["data"].Value;
+                return $"<img src=\"data:{type};base64,{data}\" />";
+            });
+            message.Body = content;
+
+            var smtpClient = new SmtpClient();
+
+            smtpClient.UseDefaultCredentials = false;
+
+            smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential(fromMail, fromPassword),
+                EnableSsl = true,
+            };
+            try
+            {
+                smtpClient.Send(message);
+                return "Email sent successfully !";
+            }
+            catch (SmtpException ex)
+            {
+                return ex.Message;
+            }
+
         }
-
-
     }
 }

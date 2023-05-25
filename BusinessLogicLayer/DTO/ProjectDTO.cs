@@ -15,9 +15,9 @@ namespace BusinessLogicLayer.DTO
         public Guid ProjectId { get; set; }
         public string? ProjectName { get; set; }
         public string? CreatedBy { get; set; }
-
         public DateTime? CreatedDate { get; set; }
-
         public List<TemplateDTO> FilteredTemplatesDTO { get; set; }
+        public List<ProjectAuthorizationDTO> projectAuthorizationsDTO { get; set; }
+
     }
 }

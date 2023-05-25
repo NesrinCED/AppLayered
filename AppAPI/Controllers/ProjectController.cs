@@ -21,11 +21,19 @@ namespace AppAPI.Controllers
 
         }
 
-        [HttpGet]
-        [Route("filteredTemplates/{projectId:Guid}")]
-        public IActionResult GetFilteredTemplates([FromRoute] Guid projectId)
+        [HttpGet("filteredTemplates/{projectId:Guid}")]
+        public IActionResult GetFilteredTemplatesByProject(Guid projectId)
         {
-            var list = this._projectService.GetFilteredTemplates(projectId);
+            var list = this._projectService.GetFilteredTemplatesByProject(projectId);
+
+            return Ok(list);
+
+        }
+
+        [HttpGet("filteredTemplates")]
+        public IActionResult GetFilteredTemplates( Guid? projectId , string? language = null )
+        {
+            var list = this._projectService.GetFilteredTemplates(projectId,language);
 
             return Ok(list);
 

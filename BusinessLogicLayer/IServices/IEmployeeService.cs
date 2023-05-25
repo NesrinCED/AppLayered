@@ -13,10 +13,12 @@ namespace BusinessLogicLayer.IServices
         EmployeeDTO GetById(Guid id);
         EmployeeDTO GetByName(string name);
         public List<EmployeeDTO> GetAll();
-        CreateEmployeeDTO Register(CreateEmployeeDTO employeeRequest);
-        CreateEmployeeDTO Authenticate(CreateEmployeeDTO employeeRequest);
+        CreateEmployeeDTO Add(CreateEmployeeDTO employeeRequest);
+        AuthenticateEmployeeDTO Authenticate(AuthenticateEmployeeDTO employeeRequest);
         void Delete(Guid id);
-        EmployeeDTO Update(Guid id, EmployeeDTO employeeRequest);
+        UpdateEmployeeDTO Update(Guid id, UpdateEmployeeDTO employeeRequest);
+        UpdateUserByAdminDTO UpdateUserByAdmin(Guid id, UpdateUserByAdminDTO employeeRequest);
+
         public List<TemplateDTO> GetAllTemplates(Guid id);
 
 

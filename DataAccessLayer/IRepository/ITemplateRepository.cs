@@ -22,8 +22,8 @@ namespace DataAccessLayer.IRepository
         Template Update(Guid id, Template templateRequest);
         byte[] CreatePDFWithTemplate(Guid id, Object json);
         string SendEmailWithTemplate(Guid templateId, string subject, string to, Object json);
+        string SendPasswordEmailToUser(Guid idUser, string emailUser);
         string GenerateTemplateEngine(Guid id, Object json);
-        public List<Template> GetFilteredTemplatesByLanguage(string language);
 
 
     }

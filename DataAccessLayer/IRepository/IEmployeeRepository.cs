@@ -13,10 +13,11 @@ namespace DataAccessLayer.IRepository
         Employee GetById(Guid id);
         Employee GetByName(string name);
         public List<Employee> GetAll();
-        Employee Register(Employee employeeRequest);
+        Employee Add(Employee employeeRequest);
         Employee Authenticate(Employee employeeRequest);
         void Delete(Guid id);
         Employee Update(Guid id, Employee employeeRequest);
+        Employee UpdateUserByAdmin(Guid id, Employee employeeRequest);
 
     }
 }

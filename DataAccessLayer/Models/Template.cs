@@ -38,5 +38,8 @@ public partial class Template
     [ForeignKey("ModifiedBy")]
     [InverseProperty("TemplateModifiedBy")]
     public virtual Employee? TemplateModifiedBy { get; set; }
+
+    [InverseProperty("Template")]
+    public virtual ICollection<Templatehistory> Templatehistories { get; } = new List<Templatehistory>();
 }
 

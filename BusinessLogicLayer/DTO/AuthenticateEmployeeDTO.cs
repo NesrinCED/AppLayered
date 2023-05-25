@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.DTO
 {
-    public class CreateEmployeeDTO
+    public class AuthenticateEmployeeDTO
     {
         public Guid EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
         public string? EmployeePassword { get; set; }
-        public string? EmployeeEmail { get; set;}
+        public string? EmployeeEmail { get; set; }
         public Guid? Role { get; set; }
-        public List<CreateProjectAuthorizationDTO> projectAuthorizationsDTO { get; set; }
-
-
     }
 }

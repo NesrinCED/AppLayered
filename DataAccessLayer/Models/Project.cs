@@ -26,4 +26,7 @@ public partial class Project
 
     [InverseProperty("Project")]
     public virtual ICollection<Template> Templates { get; } = new List<Template>();
+
+    [InverseProperty("Project")]
+    public virtual ICollection<ProjectAuthorization> ProjectAuthorizations { get; } = new List<ProjectAuthorization>();
 }

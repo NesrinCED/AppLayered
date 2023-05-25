@@ -14,64 +14,106 @@ namespace DataAccessLayer.Repository
     public class ProjectRepository : IProjectRepository
     {
         private readonly AppLayeredDBDbContext _context;
-
-//        private readonly EmployeeRepository _employeeRepository;, EmployeeRepository employeeRepository
         
         public ProjectRepository(AppLayeredDBDbContext context)
         {
             _context = context;
-           // _employeeRepository = employeeRepository;
         }
 
-        public List<Template> GetFilteredTemplates(Guid projectId)
+        public List<Template> GetFilteredTemplatesByProject(Guid projectId )
         {
-            var project = this.GetById(projectId);
-
-            var projectName = project.ProjectName;
-
             var templates = new List<Template>();
-            
-            templates = _context.Templates 
-            .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
-            .Where(x => x.ProjectId == projectId).ToList();
-     
+
+            templates = _context.Templates
+                .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+                .Where(x => x.ProjectId == projectId).ToList();
+
             return templates;
-        }
 
-        public List<Project> GetAll()
+        }
+        public List<Template> GetFilteredTemplates(Guid? projectId = null, string language = null)
         {
-            List<Project> projects = new List<Project>();
-            projects = _context.Projects.ToList();
-            
-            projects.ForEach(project =>
+            var templates = new List<Template>();
+
+            if (projectId == null && language==null) {
+                var alltemplates = new List<Template>();
+
+                alltemplates = _context.Templates
+                .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project).ToList();
+                return alltemplates;
+            }
+            else if (projectId != null && language != null)
             {
-                project.CreatedDate = DateTime.ParseExact(project.CreatedDate.ToString(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                templates = _context.Templates
+               .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+               .Where(x => x.Language == language && x.ProjectId == projectId).ToList();
 
-            });
-            
-            //projects = _context.Projects.Include(x => x.Templates).ToList();
+                return templates;
 
-            return projects;
+
+            }
+            else if (projectId != null )
+            {
+                templates = _context.Templates 
+                .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+                .Where(x =>   x.ProjectId == projectId ).ToList();
+     
+                return templates;
+            }
+            else if (language != null)
+            {
+                templates = _context.Templates
+                .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+                .Where(x => x.Language == language).ToList();
+
+                return templates;
+            }
+           
+            else
+            {
+                throw new Exception("Error!!!");
+            }
+            /*     templates = _context.Templates 
+                 .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
+                 .Where(x => ( projectId.HasValue? x.ProjectId == projectId : true ) && (language==null? x.Language == language : true)).ToList();
+            */
+
         }
 
-        public Project Add(Project projectRequest)
-        {
-            projectRequest.ProjectId = Guid.NewGuid();
-            projectRequest.CreatedDate = DateTime.Now;
-            _context.Projects.Add(projectRequest);
-            _context.SaveChanges();
-            return projectRequest;
-        }
+         public List<Project> GetAll()
+         {
+             List<Project> projects = new List<Project>();
+             projects = _context.Projects.ToList();
 
-        public Project GetById(Guid id)
-        {
-            var project = _context.Projects.Include(x =>  x.Templates ).FirstOrDefault(x => x.ProjectId == id);
-                /*            _context.Templates.ToList();
-.ForEach( x => {
-                x.Templates.ToList().ForEach(x => { x.TemplateCreatedBy = this._employeeRepository.GetById((Guid)x.CreatedBy);
-                    x.TemplateModifiedBy = this._employeeRepository.GetById((Guid)x.ModifiedBy);
-                });
-            });*/
+             projects.ForEach(project =>
+             {
+                 project.CreatedDate = DateTime.ParseExact(project.CreatedDate.ToString(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+             });
+
+             //projects = _context.Projects.Include(x => x.Templates).ToList();
+
+             return projects;
+         }
+
+         public Project Add(Project projectRequest)
+         {
+             projectRequest.ProjectId = Guid.NewGuid();
+             projectRequest.CreatedDate = DateTime.Now;
+             _context.Projects.Add(projectRequest);
+             _context.SaveChanges();
+             return projectRequest;
+         }
+
+         public Project GetById(Guid id)
+         {
+             var project = _context.Projects.Include(x =>  x.Templates ).FirstOrDefault(x => x.ProjectId == id);
+                 /*            _context.Templates.ToList();
+ .ForEach( x => {
+                 x.Templates.ToList().ForEach(x => { x.TemplateCreatedBy = this._employeeRepository.GetById((Guid)x.CreatedBy);
+                     x.TemplateModifiedBy = this._employeeRepository.GetById((Guid)x.ModifiedBy);
+                 });
+             });*/
             if (project == null)
             {
                 return null;

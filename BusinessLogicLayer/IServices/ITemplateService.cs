@@ -18,8 +18,8 @@ namespace BusinessLogicLayer.IServices
         UpdateTemplateDTO Update(Guid id, UpdateTemplateDTO templateRequest);
         byte[] CreatePDFWithTemplate(Guid id, Object json);
         string SendEmailWithTemplate(Guid templateId, string subject, string to, Object json);
+        string SendPasswordEmailToUser(Guid idUser, string emailUser);
         string GenerateTemplateEngine(Guid id, Object json);
-        public List<TemplateDTO> GetFilteredTemplatesByLanguage(string language);
 
 
     }

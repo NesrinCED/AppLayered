@@ -23,9 +23,26 @@ public partial class Employee
     [Unicode(false)]
     public string? EmployeePassword { get; set; }
 
+    [Column("Role_Id")]
+    public Guid? Role { get; set; }
+
+    [ForeignKey("Role")]
+    [InverseProperty("Employees")]
+    public virtual Role? RoleNavigation { get; set; }
+
+    [Column("Employee_Email")]
+    [StringLength(100)]
+    [Unicode(false)]
+    public string? EmployeeEmail { get; set; }
+
     [InverseProperty("TemplateCreatedBy")]
     public virtual ICollection<Template> TemplateCreatedBy { get; } = new List<Template>();
 
     [InverseProperty("TemplateModifiedBy")]
     public virtual ICollection<Template> TemplateModifiedBy { get; } = new List<Template>();
+
+    [InverseProperty("Employee")]
+    public virtual ICollection<ProjectAuthorization> ProjectAuthorizations { get; } = new List<ProjectAuthorization>();
+
 }
+

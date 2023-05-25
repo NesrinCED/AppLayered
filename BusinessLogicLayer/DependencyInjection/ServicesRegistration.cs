@@ -23,11 +23,23 @@ namespace BusinessLogicLayer.DependencyInjection
 
             services.AddScoped<ITemplateService, TemplateService>();
 
+            services.AddScoped<ITemplateHistoryService, TemplateHistoryService>();
+
+            services.AddScoped<IRoleService, RoleService>();
+
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             services.AddScoped<IProjectRepository, ProjectRepository>();
 
             services.AddScoped<ITemplateRepository, TemplateRepository>();
+
+            services.AddScoped<ITemplateHistoryRepository, TemplateHistoryRepository>();
+
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
+            services.AddScoped<IProjectAuthorizationRepository, ProjectAuthorizationRepository>();
+
+            services.AddScoped<IProjectAuthorizationService, ProjectAuthorizationService>();
 
             return services;
         }

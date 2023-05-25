@@ -15,7 +15,11 @@ namespace BusinessLogicLayer.DTO
         public Guid EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
         public string? EmployeePassword { get; set; }
-        public  List<CreateTemplateDTO> CreatedTemplatesDTO { get; set; }
+        public Guid? Role { get; set; }
+        public RoleDTO RoleDTO { get; set; }
+        public string? EmployeeEmail { get; set; }
+        public List<CreateProjectAuthorizationDTO> projectAuthorizationsDTO { get; set; }
+        public List<CreateTemplateDTO> CreatedTemplatesDTO { get; set; }
         public List<UpdateTemplateDTO> ModifiedTemplatesDTO { get; set; }
 
     }

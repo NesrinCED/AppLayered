@@ -24,23 +24,6 @@ namespace AppAPI.Controllers
             _projectService = projectService;
         }
 
-        /*[HttpGet]
-        [Route("filteredTemplatesByLanguage/{language:string}")]
-        public IActionResult GetFilteredTemplatesByLanguage([FromRoute] string language)
-        {
-            var list = this._templateService.GetFilteredTemplatesByLanguage(language);
-
-            return Ok(list);
-
-        }*/
-        [HttpGet("filteredTemplatesByLanguage/{language}")]
-        public IActionResult GetFilteredTemplatesByLanguage([FromRoute] string language)
-        {
-            var list = this._templateService.GetFilteredTemplatesByLanguage(language);
-            return Ok(list);
-        }
-
-
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -135,23 +118,7 @@ namespace AppAPI.Controllers
             }
 
         }
-
-        /*  [HttpPost]
-          [Route("email/{id:Guid}")]
-          public IActionResult SendEmailWithTemplate([FromRoute]  Guid id, [FromBody] Object json, string subject, string to)
-          {
-              try
-              {
-                  return Ok(_templateService.SendEmailWithTemplate(id, subject, to, json)); 
-                  //return Ok("Email sent successfully !");
-              }
-              catch (SmtpException ex)
-              {
-                  return BadRequest("Error sending email: " + ex.Message);
-              }
-
-          }
-          */
+      
         [HttpPost]
         [Route("pdf/{id:Guid}")]
         public IActionResult CreatePDFWithTemplate([FromRoute] Guid id, [FromBody] Object json)
