@@ -91,7 +91,7 @@ namespace BusinessLogicLayer.Services
         {
             return _templateRepository.CreatePDFWithTemplate(id,json);
         }
-        public string SendEmailWithTemplate(Guid templateId, string subject, string to, Object json)
+        public Task<string> SendEmailWithTemplate(Guid templateId, string subject, string to, Object json)
         {
             return _templateRepository.SendEmailWithTemplate(templateId,subject,to,json);
         }

@@ -163,7 +163,7 @@ namespace DataAccessLayer.Repository
 
         }
         
-        public string SendEmailWithTemplate( Guid templateId, string subject, string to, Object json)
+        public async Task<string> SendEmailWithTemplate( Guid templateId, string subject, string to, Object json)
         {
             var template = GetById(templateId);
             
