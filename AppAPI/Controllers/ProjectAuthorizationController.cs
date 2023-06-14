@@ -33,11 +33,20 @@ namespace AppAPI.Controllers
         [HttpGet("filteredAccessedProjectAuth/{employeeId:Guid}")]
         public IActionResult GetFilteredAccessedProjectAuth(Guid employeeId)
         {
-            var listAccessedProj = this._ProjectAuthorizationService.GetFilteredAccessedProjectAuth(employeeId);
+            var listWriteTemplates = this._ProjectAuthorizationService.GetFilteredAccessedProjectAuth(employeeId);
 
-            return Ok(listAccessedProj);
+            return Ok(listWriteTemplates);
 
         }
+        [HttpGet("GetReadTemplates/{employeeId:Guid}")]
+        public IActionResult GetReadTemplates(Guid employeeId)
+        {
+            var listReadTemplates = this._ProjectAuthorizationService.GetReadTemplates(employeeId);
+
+            return Ok(listReadTemplates);
+
+        }
+        
         /********** list projects write access ******/
         [HttpGet("WriteAccessedProjects/{employeeId:Guid}")]
         public IActionResult GetWriteAccessedProjects(Guid employeeId)
@@ -55,6 +64,12 @@ namespace AppAPI.Controllers
 
             return Ok(listAccessedProjects);
 
+        }
+        /********** isWriteProjByEmployee ******/
+        [HttpGet("isWriteProjByEmployee/{projectId:Guid}/{employeeId:Guid}")]
+        public IActionResult isWriteProjByEmployee(Guid projectId, Guid employeeId)
+        {
+            return Ok(this._ProjectAuthorizationService.isWriteProjByEmployee(projectId,employeeId));
         }
         [HttpGet]
         [Route("{id:Guid}")]

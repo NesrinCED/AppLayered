@@ -68,7 +68,7 @@ namespace DataAccessLayer.Repository
         {
             List<Models.Template> templates = new List<Models.Template>();
 
-            templates = _context.Templates.Include(x=>x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x=>x.Project).ToList();
+            templates = _context.Templates.Include(x=>x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x=>x.Project).Where(x => x.Name != "TEMPEmail").ToList();
             //to get 2023-04-13T00.00.00
             templates.ForEach(template =>
             {

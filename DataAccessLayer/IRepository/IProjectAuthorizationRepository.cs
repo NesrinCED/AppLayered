@@ -16,8 +16,10 @@ namespace DataAccessLayer.IRepository
         ProjectAuthorization Update(Guid id, ProjectAuthorization projAuthRequest);
         List<Employee> GetFilteredUsersByProject(Guid projectId);
         List<List<Template>> GetFilteredAccessedProjectAuth(Guid employeeID);
+        List<List<Template>> GetReadTemplates(Guid employeeID);
         List<Project> GetWriteAccessedProjects(Guid employeeID);
         List<Project> GetReadAccessedProjects(Guid employeeID);
+        Boolean isWriteProjByEmployee(Guid projectId, Guid employeeId);
 
     }
 }

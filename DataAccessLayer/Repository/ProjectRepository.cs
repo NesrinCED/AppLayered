@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repository
 
             templates = _context.Templates
                 .Include(x => x.TemplateCreatedBy).Include(x => x.TemplateModifiedBy).Include(x => x.Project)
-                .Where(x => x.ProjectId == projectId).ToList();
+                .Where(x => x.ProjectId == projectId).Where(x => x.Name != "TEMPEmail").ToList();
 
             return templates;
 

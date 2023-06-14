@@ -17,8 +17,10 @@ namespace BusinessLogicLayer.IServices
         ProjectAuthorizationDTO Update(Guid id, ProjectAuthorizationDTO projAuthRequest);
         List<EmployeeDTO> GetFilteredUsersByProject(Guid projectId);
         List<List<TemplateDTO>> GetFilteredAccessedProjectAuth(Guid employeeID);
+        List<List<TemplateDTO>> GetReadTemplates(Guid employeeID); 
         List<ProjectDTO> GetWriteAccessedProjects(Guid employeeID);
         List<ProjectDTO> GetReadAccessedProjects(Guid employeeID);
+        Boolean isWriteProjByEmployee(Guid projectId, Guid employeeId);
 
 
     }

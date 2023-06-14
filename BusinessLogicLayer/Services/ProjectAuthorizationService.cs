@@ -53,6 +53,10 @@ namespace BusinessLogicLayer.Services
         {
             return _mapper.Map<List<List<TemplateDTO>>>(_ProjectAuthorizationRepository.GetFilteredAccessedProjectAuth(employeeID));
         }
+        List<List<TemplateDTO>> IProjectAuthorizationService.GetReadTemplates(Guid employeeID)
+        {
+            return _mapper.Map<List<List<TemplateDTO>>>(_ProjectAuthorizationRepository.GetReadTemplates(employeeID));
+        }
         List<ProjectDTO> IProjectAuthorizationService.GetWriteAccessedProjects(Guid employeeID)
         {
             return _mapper.Map<List<ProjectDTO>>(_ProjectAuthorizationRepository.GetWriteAccessedProjects(employeeID));
@@ -61,8 +65,11 @@ namespace BusinessLogicLayer.Services
         {
             return _mapper.Map<List<ProjectDTO>>(_ProjectAuthorizationRepository.GetReadAccessedProjects(employeeID));
         }
-
-        CreateProjectAuthorizationDTO IProjectAuthorizationService.Add(CreateProjectAuthorizationDTO ProjectAuthorization)
+        Boolean IProjectAuthorizationService.isWriteProjByEmployee(Guid projectId, Guid employeeId)
+        {
+            return _ProjectAuthorizationRepository.isWriteProjByEmployee(projectId,employeeId);
+        }
+    CreateProjectAuthorizationDTO IProjectAuthorizationService.Add(CreateProjectAuthorizationDTO ProjectAuthorization)
         {
             /*var mappedProjectAuthorization = _mapper.Map<DataAccessLayer.Models.ProjectAuthorization>(ProjectAuthorization);
 

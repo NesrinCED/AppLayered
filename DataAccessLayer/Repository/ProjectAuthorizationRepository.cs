@@ -127,7 +127,37 @@ namespace DataAccessLayer.Repository
 
             return listProjects;
         }
+        /**********list projects of read access****************/
+        List<List<Template>> IProjectAuthorizationRepository.GetReadTemplates(Guid employeeID)
+        {
+            var listProjAuth = _context.ProjectAuthorizations.Include(a => a.Employee)
+                .Include(a => a.Project).ThenInclude(p => p.Templates).ThenInclude(p => p.TemplateCreatedBy).ThenInclude(p => p.TemplateModifiedBy)
+            .Where(a => a.EmployeeId == employeeID).Where(a => a.Read == true).ToList();
 
+            var listProjects = new List<Project>();
+
+            listProjects = listProjAuth.Select(a => a.Project).ToList();
+
+            var listTemplates = new List<List<Template>>();
+
+            listTemplates = listProjects.Select(a => a.Templates.ToList()).ToList();
+
+            return listTemplates;
+        }
+        /********** is project write by employees ****************/
+        Boolean IProjectAuthorizationRepository.isWriteProjByEmployee(Guid projectId, Guid employeeId)
+        {
+            var ProjAuth = _context.ProjectAuthorizations.Include(a => a.Employee)
+            .Include(a => a.Project).ThenInclude(p => p.Templates).ThenInclude(p => p.TemplateCreatedBy).ThenInclude(p => p.TemplateModifiedBy)
+            .FirstOrDefault(a => a.EmployeeId == employeeId && a.ProjectId == projectId);
+
+            if (ProjAuth != null)
+            {
+                return ProjAuth.Write;
+            }
+
+            return false;
+        }
         ProjectAuthorization IProjectAuthorizationRepository.Update(Guid id, ProjectAuthorization projAuthRequest)
         {
             var projAuth = _context.ProjectAuthorizations.Find(id);
