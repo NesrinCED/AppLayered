@@ -16,9 +16,13 @@ using iTextSharp.text.html.simpleparser;
 using IronPdf;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Dynamic;
-using Org.BouncyCastle.Crypto;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using iTextSharp.tool.xml.parser;
+using iTextSharp.tool.xml.pipeline.css;
+using iTextSharp.tool.xml.pipeline.html;
+
 
 namespace DataAccessLayer.Repository
 {
@@ -38,6 +42,27 @@ namespace DataAccessLayer.Repository
             _context = context;
         }
 
+
+
+        /************************************************************/
+
+         public byte[] CreatePDFWithTemplate(Guid id, Object json)
+        {
+            var template = GetById(id);
+
+            string content = GenerateTemplateEngine(id, json);
+
+            content += " <style> table, th, td {\r\n  border: 1px solid black; border-collapse: collapse;\r\n}</style> ";
+
+            HtmlToPdf htmlToPdf = new HtmlToPdf();
+
+            var pdfDocument = htmlToPdf.RenderHtmlAsPdf(content);
+
+            pdfDocument.SaveAs("output.pdf");
+
+            return pdfDocument.BinaryData.ToArray();
+
+        }
         public Models.Template Add(Models.Template templateRequest)
         {
             templateRequest.TemplateId = Guid.NewGuid();
@@ -146,30 +171,14 @@ namespace DataAccessLayer.Repository
 
             return template;
         }
-      
-        public byte[] CreatePDFWithTemplate(Guid id, Object json)
-        {
-            var template = GetById(id);
 
-            string content = GenerateTemplateEngine(id, json);
-
-            HtmlToPdf htmlToPdf = new HtmlToPdf();
-
-            var pdfDocument = htmlToPdf.RenderHtmlAsPdf(content);
-
-            pdfDocument.SaveAs("output.pdf");
-
-            return pdfDocument.BinaryData.ToArray();
-
-        }
-        
         public async Task<string> SendEmailWithTemplate( Guid templateId, string subject, string to, Object json)
         {
             var template = GetById(templateId);
             
             string content = GenerateTemplateEngine(templateId,json);
-            //var body = template.Content;
-            var body = content;
+
+            //var body = content;
 
             string fromMail = "dtgnororeply@gmail.com";
             var fromPassword = "acimfpkjvvyyazvi";
@@ -190,8 +199,23 @@ namespace DataAccessLayer.Repository
                 var data = match.Groups["data"].Value;
                 return $"<img src=\"data:{type};base64,{data}\" />";
             });
-            
-            message.Body = content;
+
+            string styledContent = $@"
+                <html>
+                <head>
+                <style>
+                table, th, td {{
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }}
+                </style>
+                </head>
+                <body>
+                {content}
+                </body>
+                </html>";
+            message.Body = styledContent;
+            //message.Body = content;
 
             var smtpClient = new SmtpClient();
 
@@ -212,43 +236,83 @@ namespace DataAccessLayer.Repository
             {
                 return ex.Message;
             }
-
         }
-        public string GenerateTemplateEngine(Guid id, Object json)
+        public string GenerateTemplateEngine(Guid id, object json)
         {
             var engine = new VelocityEngine();
-
             engine.Init();
 
             var context = new VelocityContext();
-
             var template = GetById(id);
-
             var content = template.Content;
 
+            ProcessJsonProperties(json, context);
+
+            var outputWriter = new StringWriter();
+            engine.Evaluate(context, outputWriter, "templateName", content);
+
+            string output = outputWriter.ToString();
+            return output;
+        }
+        private void ProcessJsonProperties(object json, VelocityContext context, string parentKey = "")
+        {
             dynamic model = JsonConvert.DeserializeObject(json.ToString());
 
             foreach (JProperty prop in model)
             {
+                string propertyName = !string.IsNullOrEmpty(parentKey) ? $"{parentKey}.{prop.Name}" : prop.Name;
+
                 if (prop.Value.Type == JTokenType.Object)
                 {
-                    var nestedObject = JsonConvert.DeserializeObject(prop.Value.ToString());
-                    context.Put(prop.Name, nestedObject);
+                    VelocityContext nestedContext = new VelocityContext();
+                    ProcessJsonProperties(prop.Value, nestedContext);
+                    context.Put(prop.Name, nestedContext);
                 }
                 else
                 {
-                    context.Put(prop.Name, prop.Value.ToString());
+                    context.Put(propertyName, prop.Value.ToString());
                 }
             }
-
-            var outputWriter = new StringWriter();
-
-            engine.Evaluate(context, outputWriter, "templateName", content);
-
-            string output = outputWriter.ToString();
-
-            return output;
         }
+
+
+
+        /*       public string GenerateTemplateEngine(Guid id, Object json)
+               {
+                   var engine = new VelocityEngine();
+
+                   engine.Init();
+
+                   var context = new VelocityContext();
+
+                   var template = GetById(id);
+
+                   var content = template.Content;
+
+                   dynamic model = JsonConvert.DeserializeObject(json.ToString());
+
+                   foreach (JProperty prop in model)
+                   {
+                       if (prop.Value.Type == JTokenType.Object)
+                       {
+                           var nestedObject = JsonConvert.DeserializeObject(prop.Value.ToString());
+                           context.Put(prop.Name, nestedObject);
+                       }
+                       else
+                       {
+                           context.Put(prop.Name, prop.Value.ToString());
+                       }
+                   }
+
+                   var outputWriter = new StringWriter();
+
+                   engine.Evaluate(context, outputWriter, "templateName", content);
+
+                   string output = outputWriter.ToString();
+
+                   return output;
+               }
+        */
         /*******Send email For User Password*********/
         public string SendPasswordEmailToUser(Guid idUser, string emailUser)
         {

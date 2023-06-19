@@ -3,10 +3,10 @@ using BusinessLogicLayer.IServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using Newtonsoft.Json.Linq;
-using NVelocity;
-using NVelocity.App;
-using Newtonsoft.Json;
-using DataAccessLayer.Models;
+using iTextSharp.text;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace AppAPI.Controllers
 {
@@ -24,6 +24,27 @@ namespace AppAPI.Controllers
             _projectService = projectService;
         }
 
+       [HttpPost]
+        [Route("pdf/{id:Guid}")]
+        public IActionResult CreatePDFWithTemplate([FromRoute] Guid id, [FromBody] Object json)
+        {
+            var fileData = _templateService.CreatePDFWithTemplate(id,json);
+            var fileName = "TemplatePdf.pdf";
+            var mimeType = "application/pdf";
+            // Set the content type and return the PDF as a FileResult
+            var file = File(fileData, mimeType, fileName);
+
+            return file;
+            //return Ok(file) ;
+        }
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Please select an image.");
+
+            return Ok(new { message = "Image uploaded successfully." });
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -88,14 +109,7 @@ namespace AppAPI.Controllers
             }
             return Ok(template);
         }
-        [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("Please select an image.");
 
-            return Ok(new { message = "Image uploaded successfully." });
-        }
 
         [HttpPost]
         [Route("email/{id:Guid}")]
@@ -118,21 +132,8 @@ namespace AppAPI.Controllers
             }
 
         }
-      
-        [HttpPost]
-        [Route("pdf/{id:Guid}")]
-        public IActionResult CreatePDFWithTemplate([FromRoute] Guid id, [FromBody] Object json)
-        {
-            var fileData = _templateService.CreatePDFWithTemplate(id,json);
-            var fileName = "TemplatePdf.pdf";
-            var mimeType = "application/pdf";
-            // Set the content type and return the PDF as a FileResult
-            var file = File(fileData, mimeType, fileName);
-          
-            return file;
-            //return Ok(file) ;
-        }
 
+      
         [HttpPost]
         [Route("engine/{id:Guid}")]
         public IActionResult TemplateEngine([FromRoute] Guid id, [FromBody] Object json)

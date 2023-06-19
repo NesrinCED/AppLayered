@@ -46,6 +46,24 @@ namespace DataAccessLayer.Repository
         {
             var templatehistory = _context.Templatehistories.Where(a => a.TemplateId == id).ToList();
 
+           /* templatehistory.ForEach(a =>
+            {
+                a.Content = $@"
+                <html>
+                <head>
+                <style>
+                table, th, td {{
+                    border: 1px solid black;
+                    border-collapse: collapse;
+border-color: black; 
+                }}
+                </style>
+                </head>
+                <body>
+                {a.Content}
+                </body>
+                </html>"; 
+            });*/
 
             if (templatehistory == null)
             {
